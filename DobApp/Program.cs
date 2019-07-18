@@ -11,20 +11,6 @@ namespace DobApp
             Console.WriteLine("Your Born day of the week: {0}", dob.DayOfWeek);
         }
 
-        public static void Main(string[] args)
-        {
-            do
-            {
-                Console.Write("\nEnter your DOB(Use '/' as seperator): ");
-                String dobStr = Console.ReadLine();
-                DateValidation(dobStr);
-
-                Console.WriteLine();
-                Console.Write("Do you want to continue (y/n)?");
-
-            } while (Console.ReadKey().KeyChar != 'n');
-        }
-
         private static void DateValidation(string dobStr)
         {
             try
@@ -44,6 +30,21 @@ namespace DobApp
                 Console.WriteLine("Invalid Date!");
 
             }
+        }
+
+        public static void Main(string[] args)
+        {
+            do
+            {
+                Console.Write("\nEnter your DOB(Use '/' as seperator): ");
+                String dobStr = Console.ReadLine();
+
+                DateValidation(dobStr);
+
+                Console.WriteLine();
+                Console.Write("Do you want to continue (y/n)?");
+
+            } while (Console.ReadKey().KeyChar != 'n');
         }
     }
 }
