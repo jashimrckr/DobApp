@@ -1,6 +1,0 @@
-c:\users\jashim\documents\visual studio 2015\Projects\DobApp\DobApp\bin\Debug\DobApp.exe.config
-c:\users\jashim\documents\visual studio 2015\Projects\DobApp\DobApp\bin\Debug\DobApp.exe
-c:\users\jashim\documents\visual studio 2015\Projects\DobApp\DobApp\bin\Debug\DobApp.pdb
-c:\users\jashim\documents\visual studio 2015\Projects\DobApp\DobApp\obj\Debug\DobApp.csprojResolveAssemblyReference.cache
-c:\users\jashim\documents\visual studio 2015\Projects\DobApp\DobApp\obj\Debug\DobApp.exe
-c:\users\jashim\documents\visual studio 2015\Projects\DobApp\DobApp\obj\Debug\DobApp.pdb
