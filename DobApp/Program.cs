@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace DobApp
 {
@@ -13,23 +14,39 @@ namespace DobApp
 
         private static void DateValidation(string dobStr)
         {
-            try
-            {
-                DateTime dob = DateTime.ParseExact(dobStr, "dd/MM/yyyy", null);
+            //try
+            //{
+            //    DateTime dob = DateTime.ParseExact(dobStr, "dd/MM/yyyy", null);
 
-                if (dob > DateTime.Now)
+            //    if (dob > DateTime.Now)
+            //        Console.WriteLine("Invalid Date!");
+
+            //    else
+            //    {
+            //        AgeCalculator(dob);
+            //    }
+            //}
+            //catch (FormatException)
+            //{
+            //    Console.WriteLine("Invalid Date!");
+
+            //}
+
+            string format = "dd/MM/yyyy";
+            DateTime dateTime;
+            if (DateTime.TryParseExact(dobStr, format, CultureInfo.InvariantCulture,DateTimeStyles.None, out dateTime))
+            {
+                if (dateTime > DateTime.Now)
                     Console.WriteLine("Invalid Date!");
-
                 else
-                {
-                    AgeCalculator(dob);
-                }
+                    AgeCalculator(dateTime);
             }
-            catch (FormatException)
+            else
             {
-                Console.WriteLine("Invalid Date!");
-
+                Console.WriteLine("Not a date");
             }
+
+
         }
 
         public static void Main(string[] args)
