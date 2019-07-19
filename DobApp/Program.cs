@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DobApp
 {
@@ -7,33 +9,50 @@ namespace DobApp
     {
         public static void Main(string[] args)
         {
+
+            List<FamilyMember> FamilyMemberList = new List<FamilyMember>();
+
             do
             {
-                string dobStr = getInput();
+                Console.Write("\nEnter your name: ");
+                String name = Console.ReadLine();
 
-                String status = validateInput(dobStr);
+                String dobStr = getInput();
 
-                if (status != null)
+                DateTime validDate = validateInput(dobStr);
+
+                if (validDate != DateTime.MinValue)
                 {
-                    DateTime dob = Convert.ToDateTime(status);
-                    calcutateAge(dob);
+                    int totalDays = (DateTime.Now - validDate).Days;
+                    Console.WriteLine(totalDays);
+                    FamilyMemberList.Add(new FamilyMember(name, validDate, totalDays));
                 }
+
                 Console.WriteLine();
                 Console.Write("Do you want to continue (y/n)?");
 
             } while (Console.ReadKey().KeyChar != 'n');
+
+            List<FamilyMember> SortedList = FamilyMemberList.OrderBy(o => o.TotalDays).ToList();
+            foreach (var member in SortedList)
+            {
+                var result = calcutateAge(member.Dob);
+                printOutput(result.Item1, result.Item2, result.Item3, member.Name, member.Dob);
+                Console.WriteLine();
+            }
+
+            Console.ReadKey();
         }
 
-        private static string getInput()
+        public static string getInput()
         {
             Console.Write("\nEnter your DOB(Use '/' as seperator): ");
             String dobStr = Console.ReadLine();
             return dobStr;
         }
 
-        private static String validateInput(string dobStr)
+        public static DateTime validateInput(string dobStr)
         {
-
             string format = "dd/MM/yyyy";
             DateTime dateTime;
             if (DateTime.TryParseExact(dobStr, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
@@ -41,42 +60,45 @@ namespace DobApp
                 if (dateTime > DateTime.Now)
                 {
                     Console.WriteLine("Invalid Date!");
-                    return null;
+                    return DateTime.MinValue;
                 }
                 else
-                    return dateTime.ToString();
+                    return dateTime;
             }
             else
             {
                 Console.WriteLine("Not a date");
-                return null;
+                return DateTime.MinValue;
             }
         }
 
-        private static void calcutateAge(DateTime dob)
+        private static Tuple<int, int, int> calcutateAge(DateTime dob)
         {
+            DateTime today = DateTime.Today;
 
-            DateTime Now = DateTime.Now;
-            int Years = new DateTime(DateTime.Now.Subtract(dob).Ticks).Year - 1;
-            DateTime DOBDateNow = dob.AddYears(Years);
-            int Months = 0;
-            for (int i = 1; i <= 12; i++)
+            int months = today.Month - dob.Month;
+            int years = today.Year - dob.Year;
+
+            if (today.Day < dob.Day)
+                months--;
+
+            if (months < 0)
             {
-                if (DOBDateNow.AddMonths(i) == Now)
-                {
-                    Months = i;
-                    break;
-                }
-                else if (DOBDateNow.AddMonths(i) >= Now)
-                {
-                    Months = i - 1;
-                    break;
-                }
+                years--;
+                months += 12;
             }
-            int Days = Now.Subtract(DOBDateNow.AddMonths(Months)).Days;
 
-            Console.WriteLine("Age: {0} Year(s), {1} Month(s) and {2} Day(s)", Years, Months, Days);
-            Console.WriteLine("Your Born day of the week: {0}", dob.DayOfWeek);
+            int days = (today - dob.AddMonths((years * 12) + months)).Days;
+
+            return Tuple.Create(years, months, days);
+        }
+
+        public static void printOutput(int years, int months, int days, String name, DateTime dob)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Name: {0}", name);
+            Console.WriteLine("Age: {0} year(s), {1} month(s) and {2} day(s)", years, months, days);
+            Console.WriteLine("Your born day of the week: {0}", dob.DayOfWeek);
         }
     }
 }
