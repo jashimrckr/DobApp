@@ -24,7 +24,6 @@ namespace DobApp
                 if (validDate != DateTime.MinValue)
                 {
                     int totalDays = (DateTime.Now - validDate).Days;
-                    Console.WriteLine(totalDays);
                     FamilyMemberList.Add(new FamilyMember(name, validDate, totalDays));
                 }
 
@@ -36,7 +35,7 @@ namespace DobApp
             List<FamilyMember> SortedList = FamilyMemberList.OrderBy(o => o.TotalDays).ToList();
             foreach (var member in SortedList)
             {
-                var result = calcutateAge(member.Dob);
+                var result = member.calcutateAge(member.Dob);
                 printOutput(result.Item1, result.Item2, result.Item3, member.Name, member.Dob);
                 Console.WriteLine();
             }
@@ -72,26 +71,7 @@ namespace DobApp
             }
         }
 
-        private static Tuple<int, int, int> calcutateAge(DateTime dob)
-        {
-            DateTime today = DateTime.Today;
-
-            int months = today.Month - dob.Month;
-            int years = today.Year - dob.Year;
-
-            if (today.Day < dob.Day)
-                months--;
-
-            if (months < 0)
-            {
-                years--;
-                months += 12;
-            }
-
-            int days = (today - dob.AddMonths((years * 12) + months)).Days;
-
-            return Tuple.Create(years, months, days);
-        }
+        
 
         public static void printOutput(int years, int months, int days, String name, DateTime dob)
         {
