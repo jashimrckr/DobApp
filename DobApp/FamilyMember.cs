@@ -9,35 +9,45 @@ namespace DobApp
     class FamilyMember
     {
         public String Name;
-        public DateTime Dob;
+        public DateTimeOffset Dob;
         public int TotalDays;
 
-        public FamilyMember(String name, DateTime dob, int totaldays)
+        public FamilyMember(String name, DateTimeOffset dob, int totaldays)
         {
             this.Name = name;
             this.Dob = dob;
             this.TotalDays = totaldays; 
         }
 
-        public Tuple<int, int, int> calcutateAge(DateTime dob)
-        {
-            DateTime today = DateTime.Today;
+        public class Age {
 
-            int months = today.Month - dob.Month;
-            int years = today.Year - dob.Year;
+            public int years, months, days;
 
-            if (today.Day < dob.Day)
-                months--;
-
-            if (months < 0)
+            public Age calcutateAge(DateTimeOffset dob)
             {
-                years--;
-                months += 12;
-            }
+                DateTimeOffset today = DateTimeOffset.Now;
 
-            int days = (today - dob.AddMonths((years * 12) + months)).Days;
+                months = today.Month - dob.Month;
+                years = today.Year - dob.Year;
 
-            return Tuple.Create(years, months, days);
-        }
+                if (today.Day < dob.Day)
+                    months--;
+
+                if (months < 0)
+                {
+                    years--;
+                    months += 12;
+                }
+
+                days = (today - dob.AddMonths((years * 12) + months)).Days;
+
+                Age values = new Age();
+                values.years = years;
+                values.months = months;
+                values.days = days;
+                return values;
+             }
+
+         }
     }
 }
