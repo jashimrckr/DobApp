@@ -16,15 +16,15 @@ namespace DobApp
 
             do
             {
-                String name = getName();
+                string name = getName();
               
-                String dobStr = getDob();
+                string dobStr = getDob();
 
-                DateTimeOffset validDate = validateInput(dobStr);
+                DateTime validDate = validateDob(dobStr);
 
-                if (validDate != DateTimeOffset.MinValue)
+                if (validDate != DateTime.MinValue)
                 {
-                    int totalDays = (DateTimeOffset.Now - validDate).Days;
+                    int totalDays = (DateTime.Now - validDate).Days;
                     FamilyMemberList.Add(new FamilyMember(name, validDate, totalDays));
                 }
 
@@ -33,36 +33,45 @@ namespace DobApp
 
             } while (Console.ReadKey().KeyChar != 'n');
 
-            Sort s = new Sort();
-            s.sortList(FamilyMemberList);
-            
+            Sort sortObj = new Sort();
+            List<FamilyMember> sortedList = sortObj.sortMembers(FamilyMemberList);
+
+            Age ageObj = new Age();
+
+            foreach (var member in sortedList)
+            {
+                Age result = ageObj.calcutateAge(member.Dob);
+                printOutput(result, member.Name, member.Dob);
+                Console.WriteLine();
+            }
+
             Console.ReadKey();
         }
 
         private static string getName()
         {
             Console.Write("\nEnter your name: ");
-            String name = Console.ReadLine();
+            string name = Console.ReadLine();
             return name;
         }
 
         public static string getDob()
         {
             Console.Write("\nEnter your DOB(Use '/' as seperator): ");
-            String dobStr = Console.ReadLine();
+            string dobStr = Console.ReadLine();
             return dobStr;
         }
 
-        public static DateTimeOffset validateInput(string dobStr)
+        public static DateTime validateDob(string dobStr)
         {
             string format = "dd/MM/yyyy";
-            DateTimeOffset dateTime;
-            if (DateTimeOffset.TryParseExact(dobStr, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+            DateTime dateTime;
+            if (DateTime.TryParseExact(dobStr, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
             {
-                if (dateTime > DateTimeOffset.Now)
+                if (dateTime > DateTime.Now)
                 {
                     Console.WriteLine("Invalid Date!");
-                    return DateTimeOffset.MinValue;
+                    return DateTime.MinValue;
                 }
                 else
                     return dateTime;
@@ -70,17 +79,15 @@ namespace DobApp
             else
             {
                 Console.WriteLine("Not a date");
-                return DateTimeOffset.MinValue;
+                return DateTime.MinValue;
             }
         }
 
-        
-
-        public static void printOutput(int years, int months, int days, String name, DateTimeOffset dob)
+        public static void printOutput(Age result, string name, DateTime dob)
         {
             Console.WriteLine();
             Console.WriteLine("Name: {0}", name);
-            Console.WriteLine("Age: {0} year(s), {1} month(s) and {2} day(s)", years, months, days);
+            Console.WriteLine("Age: {0} year(s), {1} month(s) and {2} day(s)", result.years, result.months, result.days);
             Console.WriteLine("Your born day of the week: {0}", dob.DayOfWeek);
         }
     }
