@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DobApp
 {
@@ -16,53 +13,48 @@ namespace DobApp
 
             do
             {
-                string name = getName();
+                string name = _GetName();
               
-                string dobStr = getDob();
+                string dobStr = _GetDob();
 
-                DateTime validDate = validateDob(dobStr);
+                DateTime validDate = _ValidateDob(dobStr);
 
                 if (validDate != DateTime.MinValue)
                 {
-                    int totalDays = (DateTime.Now - validDate).Days;
-                    FamilyMemberList.Add(new FamilyMember(name, validDate, totalDays));
+                    FamilyMemberList.Add(new FamilyMember(name, validDate));
                 }
 
                 Console.WriteLine();
                 Console.Write("Do you want to continue (y/n)?");
 
             } while (Console.ReadKey().KeyChar != 'n');
-
-            Sort sortObj = new Sort();
-            List<FamilyMember> sortedList = sortObj.sortMembers(FamilyMemberList);
-
-            Age ageObj = new Age();
+            
+            List<FamilyMember> sortedList = FamilyMember.SortMembers(FamilyMemberList);
 
             foreach (var member in sortedList)
             {
-                Age result = ageObj.calcutateAge(member.Dob);
-                printOutput(result, member.Name, member.Dob);
+                _PrintOutput(member);
                 Console.WriteLine();
             }
 
             Console.ReadKey();
         }
 
-        private static string getName()
+        private static string _GetName()
         {
             Console.Write("\nEnter your name: ");
             string name = Console.ReadLine();
             return name;
         }
 
-        public static string getDob()
+        private static string _GetDob()
         {
             Console.Write("\nEnter your DOB(Use '/' as seperator): ");
             string dobStr = Console.ReadLine();
             return dobStr;
         }
 
-        public static DateTime validateDob(string dobStr)
+        private static DateTime _ValidateDob(string dobStr)
         {
             string format = "dd/MM/yyyy";
             DateTime dateTime;
@@ -73,8 +65,7 @@ namespace DobApp
                     Console.WriteLine("Invalid Date!");
                     return DateTime.MinValue;
                 }
-                else
-                    return dateTime;
+                return dateTime;
             }
             else
             {
@@ -83,12 +74,12 @@ namespace DobApp
             }
         }
 
-        public static void printOutput(Age result, string name, DateTime dob)
+        private static void _PrintOutput(FamilyMember memberDetails)
         {
             Console.WriteLine();
-            Console.WriteLine("Name: {0}", name);
-            Console.WriteLine("Age: {0} year(s), {1} month(s) and {2} day(s)", result.years, result.months, result.days);
-            Console.WriteLine("Your born day of the week: {0}", dob.DayOfWeek);
+            Console.WriteLine("Name: {0}", memberDetails.Name);
+            Console.WriteLine("Age: {0} year(s), {1} month(s) and {2} day(s)", memberDetails.Age.years, memberDetails.Age.months, memberDetails.Age.days);
+            Console.WriteLine("Your born day of the week: {0}", memberDetails.Dob.DayOfWeek);
         }
     }
 }
