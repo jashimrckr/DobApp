@@ -9,27 +9,47 @@ namespace DobApp
         public static void Main(string[] args)
         {
 
-            List<FamilyMember> FamilyMemberList = new List<FamilyMember>();
+            List<FamilyMember> familyMemberList = new List<FamilyMember>();
 
             do
             {
-                string name = _GetName();
               
+                string type = null;
+                while (type == null) { type = _GetType(); }
+
+                string category = null;
+                string name = null;
+                if (string.Equals(type, "pet", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    category = _GetCategory();
+                }
+                else
+                {
+                    name = _GetName();
+                }
+
                 string dobStr = _GetDob();
 
                 DateTime validDate = _ValidateDob(dobStr);
 
                 if (validDate != DateTime.MinValue)
                 {
-                    FamilyMemberList.Add(new FamilyMember(name, validDate));
+                    if (string.Equals(type, "person", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        familyMemberList.Add(new Person(type, name, validDate));
+                    }
+                    else
+                    {
+                        familyMemberList.Add(new Pet(type, category, validDate));
+                    }
                 }
 
                 Console.WriteLine();
                 Console.Write("Do you want to continue (y/n)?");
 
-            } while (Console.ReadKey().KeyChar != 'n');
+            } while (Console.ReadLine() != "n");
             
-            List<FamilyMember> sortedList = FamilyMember.SortMembers(FamilyMemberList);
+            List<FamilyMember> sortedList = FamilyMember.SortMembers(familyMemberList);
 
             foreach (var member in sortedList)
             {
@@ -37,12 +57,33 @@ namespace DobApp
                 Console.WriteLine();
             }
 
+            Console.WriteLine("\nPress any key to Exit..");
             Console.ReadKey();
+        }
+        private static string _GetType()
+        {
+            Console.Write("\nEnter type (Person/Pet): ");
+            string type = Console.ReadLine();
+
+            if (string.Equals(type, "pet", StringComparison.CurrentCultureIgnoreCase) || string.Equals(type, "person", StringComparison.CurrentCultureIgnoreCase))
+            {
+                return type;
+            }
+
+            Console.WriteLine("Please enter a valid type");
+            return null;
+        }
+
+        private static string _GetCategory()
+        {
+            Console.Write("\nEnter Category (Eg: Cat): ");
+            string category = Console.ReadLine();
+            return category;
         }
 
         private static string _GetName()
         {
-            Console.Write("\nEnter your name: ");
+            Console.Write("\nEnter name: ");
             string name = Console.ReadLine();
             return name;
         }
@@ -77,7 +118,17 @@ namespace DobApp
         private static void _PrintOutput(FamilyMember memberDetails)
         {
             Console.WriteLine();
-            Console.WriteLine("Name: {0}", memberDetails.Name);
+            Console.WriteLine("Type: {0}", memberDetails.Type);
+            if(memberDetails is Person)
+            {
+                var personMember = (Person)memberDetails;
+                Console.WriteLine("Name: {0}", personMember.Name);
+            }
+            else
+            {
+                var petMember = (Pet)memberDetails;
+                Console.WriteLine("Category: {0}", petMember.Category);
+            }
             Console.WriteLine("Age: {0} year(s), {1} month(s) and {2} day(s)", memberDetails.Age.years, memberDetails.Age.months, memberDetails.Age.days);
             Console.WriteLine("Your born day of the week: {0}", memberDetails.Dob.DayOfWeek);
         }

@@ -4,29 +4,26 @@ using System.Linq;
 
 namespace DobApp
 {
-    public class FamilyMember
+    public abstract class FamilyMember
     {
-        public string Name { get; private set; }
-        public DateTime Dob { get; private set; }
-        public int TotalDays { get; private set; }
-        public Age Age { get; private set; }
+        public string Type { get; protected set; }
+        public DateTime Dob { get; protected set; }
+        public int TotalDays { get; protected set; }
+        public Age Age { get; protected set; }
 
-        public FamilyMember(string name, DateTime dob)
+        public FamilyMember(string type, DateTime dob)
         {
-            this.Name = name;
+            this.Type = type;
             this.Dob = dob;
             this.TotalDays = (DateTime.Now - dob).Days;
             this.Age = new Age(dob);
-
         }
 
-        public static List<FamilyMember> SortMembers(List<FamilyMember> FamilyMemberList)
+        public static List<FamilyMember> SortMembers(List<FamilyMember> familyMemberList)
         {
-            List<FamilyMember> sortedList = FamilyMemberList.OrderBy(o => o.TotalDays).ToList();
+            List<FamilyMember> sortedList = familyMemberList.OrderBy(o => o.TotalDays).ToList();
             return sortedList;
         }
-    }
-
-    
+    } 
 }
 
