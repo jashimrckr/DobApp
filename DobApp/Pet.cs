@@ -8,11 +8,11 @@ namespace DobApp
 {
     public class Pet : FamilyMember
     {
-        public string Category { get; private set; }
+        public string Breed { get; private set; }
 
-        public Pet(string type, string category, DateTime dob) : base(type, dob)
+        public Pet(string name, string breed, DateTime dob) : base(name, dob)
         {
-            this.Category = category;
+            this.Breed = breed;
         }
 
     }

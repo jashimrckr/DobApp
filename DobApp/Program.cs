@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Web.Script.Serialization;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace DobApp
 {
@@ -13,19 +16,20 @@ namespace DobApp
 
             do
             {
-              
-                string type = null;
-                while (type == null) { type = _GetType(); }
+                int type = 0;
+                while (type == 0) { type = _GetType(); }
 
-                string category = null;
-                string name = null;
-                if (string.Equals(type, "pet", StringComparison.CurrentCultureIgnoreCase))
+                string name = _GetName();
+
+                string breed = null;
+                string profession = null;
+                if (type == 1)
                 {
-                    category = _GetCategory();
+                    profession = _GetProfession();
                 }
                 else
                 {
-                    name = _GetName();
+                    breed = _GetBreed();
                 }
 
                 string dobStr = _GetDob();
@@ -34,13 +38,13 @@ namespace DobApp
 
                 if (validDate != DateTime.MinValue)
                 {
-                    if (string.Equals(type, "person", StringComparison.CurrentCultureIgnoreCase))
+                    if (type == 1)
                     {
-                        familyMemberList.Add(new Person(type, name, validDate));
+                        familyMemberList.Add(new Person(name, profession, validDate));
                     }
                     else
                     {
-                        familyMemberList.Add(new Pet(type, category, validDate));
+                        familyMemberList.Add(new Pet(name, breed, validDate));
                     }
                 }
 
@@ -53,32 +57,42 @@ namespace DobApp
 
             foreach (var member in sortedList)
             {
-                _PrintOutput(member);
+                _ProvideOutput(member);
                 Console.WriteLine();
             }
+
 
             Console.WriteLine("\nPress any key to Exit..");
             Console.ReadKey();
         }
-        private static string _GetType()
+        private static int _GetType()
         {
-            Console.Write("\nEnter type (Person/Pet): ");
-            string type = Console.ReadLine();
+            Console.WriteLine("\nEnter your choice: ");
+            Console.WriteLine("\n1. Add Person to Family ");
+            Console.WriteLine("\n2. Add Pet to Family ");
 
-            if (string.Equals(type, "pet", StringComparison.CurrentCultureIgnoreCase) || string.Equals(type, "person", StringComparison.CurrentCultureIgnoreCase))
+            int type = Convert.ToInt32(Console.ReadLine());
+
+            if (type == 1 || type == 2)
             {
                 return type;
             }
-
             Console.WriteLine("Please enter a valid type");
-            return null;
+            return 0;
         }
 
-        private static string _GetCategory()
+        private static string _GetBreed()
         {
-            Console.Write("\nEnter Category (Eg: Cat): ");
-            string category = Console.ReadLine();
-            return category;
+            Console.Write("\nEnter Breed: ");
+            string breed = Console.ReadLine();
+            return breed;
+        }
+
+        private static string _GetProfession()
+        {
+            Console.Write("\nEnter your Profession: ");
+            string profession = Console.ReadLine();
+            return profession;
         }
 
         private static string _GetName()
@@ -115,19 +129,37 @@ namespace DobApp
             }
         }
 
-        private static void _PrintOutput(FamilyMember memberDetails)
+
+
+        private static void _ProvideOutput(FamilyMember memberDetails)
         {
+            var jsonSerialiser = new JavaScriptSerializer();
+            
+            //string personPath = @"D:\Person.txt";
+
             Console.WriteLine();
-            Console.WriteLine("Type: {0}", memberDetails.Type);
-            if(memberDetails is Person)
+            Console.WriteLine("Name: {0}", memberDetails.Name);
+            if (memberDetails is Person)
             {
+                //var json = jsonSerialiser.Serialize(memberDetails);
+                
+
+                //if (!File.Exists(personPath))
+                //{
+                //    File.WriteAllText(personPath, json);
+                //}
+                //else
+                //{
+                //    File.AppendAllText(personPath, json); 
+                //}
+
                 var personMember = (Person)memberDetails;
-                Console.WriteLine("Name: {0}", personMember.Name);
+                Console.WriteLine("Profession: {0}", personMember.Profession);
             }
             else
             {
                 var petMember = (Pet)memberDetails;
-                Console.WriteLine("Category: {0}", petMember.Category);
+                Console.WriteLine("Breed: {0}", petMember.Breed);
             }
             Console.WriteLine("Age: {0} year(s), {1} month(s) and {2} day(s)", memberDetails.Age.years, memberDetails.Age.months, memberDetails.Age.days);
             Console.WriteLine("Your born day of the week: {0}", memberDetails.Dob.DayOfWeek);

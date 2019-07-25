@@ -8,11 +8,11 @@ namespace DobApp
 {
     public class Person : FamilyMember
     {
-        public string Name { get; private set; }
+        public string Profession { get; private set; }
 
-        public Person(string type, string name, DateTime dob) : base(type, dob)
+        public Person(string name, string profession, DateTime dob) : base(name, dob)
         {
-            this.Name = name;
+            this.Profession = profession;
         }
     }
 }

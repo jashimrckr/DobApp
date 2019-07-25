@@ -6,14 +6,14 @@ namespace DobApp
 {
     public abstract class FamilyMember
     {
-        public string Type { get; protected set; }
+        public string Name { get; private set; }
         public DateTime Dob { get; protected set; }
         public int TotalDays { get; protected set; }
         public Age Age { get; protected set; }
 
-        public FamilyMember(string type, DateTime dob)
+        public FamilyMember(string name, DateTime dob)
         {
-            this.Type = type;
+            this.Name = name;
             this.Dob = dob;
             this.TotalDays = (DateTime.Now - dob).Days;
             this.Age = new Age(dob);
